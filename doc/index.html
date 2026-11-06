@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none';">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Cross-Cloud Conversational Analytics — Capabilities &amp; Architecture Showcase (ani-labs)</title>
+  <meta name="description" content="Comprehensive capabilities documentation and interactive executive presentation for Google Cloud Cross-Cloud Conversational Analytics, anchored on the live Analytics Agent deployment in ani-labs across AWS PostgreSQL, AWS MySQL, and GCP BigQuery.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-view-mode="doc">
+  <!-- Top Reading Progress -->
+  <div class="progress-track" aria-hidden="true">
+    <div id="reading-progress-fill" class="progress-fill"></div>
+  </div>
+
+  <!-- Sticky Header & Mode Switcher -->
+  <header class="top-bar" role="banner">
+    <div class="brand-cluster">
+      <span class="brand-mark" aria-hidden="true">CA</span>
+      <div class="brand-titles">
+        <span class="brand-kicker">Google Cloud Data &amp; Agentic AI</span>
+        <span class="brand-name">Cross-Cloud Conversational Analytics — Capabilities &amp; Architecture</span>
+      </div>
+    </div>
+
+    <div class="top-controls">
+      <span class="env-chip">Live Env: ani-labs · Analytics Agent</span>
+      <div class="segmented-control" role="tablist" aria-label="View Mode Switcher">
+        <button id="btn-mode-doc" class="segment-btn is-active" type="button" role="tab" aria-selected="true">
+          Capabilities Doc
+        </button>
+        <button id="btn-mode-deck" class="segment-btn" type="button" role="tab" aria-selected="false">
+          Executive Deck (10 Slides)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       MODE 1: INTERACTIVE CAPABILITIES DOCUMENTATION
+       ===================================================================== -->
+  <div id="doc-workspace" class="workspace-shell">
+    <!-- Sticky Table of Contents Rail -->
+    <aside class="toc-rail" aria-label="Documentation Sections">
+      <div class="toc-heading">Capabilities Index</div>
+      <nav>
+        <ul class="toc-list">
+          <li><a id="toc-link-overview" class="toc-link is-active" href="#sec-overview"><span class="toc-num">01</span>Overview &amp; Zero-Copy Value</a></li>
+          <li><a id="toc-link-capabilities" class="toc-link" href="#sec-capabilities"><span class="toc-num">02</span>Core Agent Capabilities</a></li>
+          <li><a id="toc-link-traces" class="toc-link" href="#sec-traces"><span class="toc-num">03</span>Live Reasoning Traces</a></li>
+          <li><a id="toc-link-schema" class="toc-link" href="#sec-schema"><span class="toc-num">04</span>Hybrid Data Estate (66M Rows)</a></li>
+          <li><a id="toc-link-architecture" class="toc-link" href="#sec-architecture"><span class="toc-num">05</span>Bifurcated Scale Architecture</a></li>
+          <li><a id="toc-link-governance" class="toc-link" href="#sec-governance"><span class="toc-num">06</span>Security, DBA &amp; FinOps</a></li>
+          <li><a id="toc-link-usecases" class="toc-link" href="#sec-usecases"><span class="toc-num">07</span>Industry Scenarios &amp; Fit</a></li>
+          <li><a id="toc-link-roadmap" class="toc-link" href="#sec-roadmap"><span class="toc-num">08</span>1P Stack &amp; Maturity Plan</a></li>
+        </ul>
+      </nav>
+
+      <div class="toc-maturity-box">
+        <div class="toc-maturity-label">
+          <span>Enterprise Maturity</span>
+          <span id="maturity-pct-label">50%</span>
+        </div>
+        <div class="mini-meter">
+          <div id="maturity-meter-fill" class="mini-meter-fill"></div>
+        </div>
+        <p id="maturity-status-sub" class="toc-maturity-sub">4 of 8 v1→v2 milestones active</p>
+      </div>
+    </aside>
+
+    <!-- Main Documentation Stream -->
+    <main class="doc-stream">
+      <!-- SECTION 01: EXECUTIVE OVERVIEW & LIVE ANI-LABS GROUNDING -->
+      <article id="sec-overview" class="doc-section hero-brief">
+        <div class="telemetry-strip" aria-label="Verified Live Environment Metrics">
+          <div class="telemetry-cell">
+            <div class="telemetry-label">GCP Project &amp; Region</div>
+            <div class="telemetry-val">ani-labs (5473845300) · us-west1</div>
+          </div>
+          <div class="telemetry-cell">
+            <div class="telemetry-label">Live Deployed Agents</div>
+            <div class="telemetry-val">Analytics Agent (ADK + GE)</div>
+          </div>
+          <div class="telemetry-cell">
+            <div class="telemetry-label">BigQuery ccca Volume</div>
+            <div class="telemetry-val">66,000,061 Rows · 6.41 GB</div>
+          </div>
+          <div class="telemetry-cell">
+            <div class="telemetry-label">Cross-Cloud Topology</div>
+            <div class="telemetry-val">AWS PG + AWS MySQL + GCP BQ</div>
+          </div>
+        </div>
+
+        <div class="section-eyebrow">01 · Executive Overview</div>
+        <h1>Zero-Copy Cross-Cloud Conversational Analytics</h1>
+        <p class="hero-lead">
+          Cross-Cloud Conversational Analytics turns Google Cloud into a unified AI reasoning control plane across hybrid data estates—allowing business users, support specialists, and risk analysts to ask natural-language questions spanning live AWS operational databases and 66M-row BigQuery warehouses without upfront cross-cloud ETL movement.
+        </p>
+
+        <div class="pillars-grid">
+          <div class="pillar-card">
+            <div class="pillar-index">CAPABILITY VALUE · 01</div>
+            <h3>Eliminates the “Migration Tax” on AI Adoption</h3>
+            <p>
+              Over 80% of enterprise AI adopters operate multi-cloud topologies where core ledgers or CRM databases reside on AWS while analytics and ML live in BigQuery. Querying operational records in-place compresses Time-to-Value from 9-month ETL migrations down to days.
+            </p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-index">CAPABILITY VALUE · 02</div>
+            <h3>Real-Time HTAP Signal Fusion</h3>
+            <p>
+              Batch warehouse replication lags by minutes to hours. The <strong>Analytics Agent</strong> fuses sub-minute AWS banking balances and open support tickets with historical BigQuery ML inferences (<code>churn_risk_score</code>, <code>fraud_risk_score</code>) in a single conversational turn.
+            </p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-index">CAPABILITY VALUE · 03</div>
+            <h3>Data Sovereignty &amp; Minimal Egress Footprint</h3>
+            <p>
+              Regulated financial and healthcare tables remain inside their designated cloud enclaves. Instead of bulk-replicating terabytes of raw operational storage across clouds, only kilobytes of filtered entity rows or aggregated answers traverse the wire.
+            </p>
+          </div>
+          <div class="pillar-card">
+            <div class="pillar-index">CAPABILITY VALUE · 04</div>
+            <h3>“Win the Brain, Guide the Gravity” Control Plane</h3>
+            <p>
+              Establishes Gemini Enterprise and Vertex AI Agent Engine as the daily decision layer first. Query telemetry then identifies high-frequency cross-cloud joins that justify targeted BigQuery Omni federation or Datastream CDC replication later.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout-panel">
+          <div class="callout-title">
+            <span class="badge badge-blue">ARCHITECTURAL SCOPE CLARIFICATION</span>
+            <span>Single-Cloud GCP Native vs. Hybrid Multi-Cloud Execution</span>
+          </div>
+          <p>
+            <strong>When 100% of data already resides in Google Cloud</strong> (BigQuery, Cloud SQL, AlloyDB, Spanner), custom MCP wrappers are unnecessary—deployments connect directly to Google’s first-party <strong>Conversational Analytics API</strong> (<code>geminidataanalytics.googleapis.com</code>) and <strong>Managed BigQuery MCP</strong> (<code>bigquery.googleapis.com/mcp</code>).
+            <br><br>
+            <strong>When enterprise data spans AWS + Google Cloud</strong> (as deployed in <code>ani-labs</code>), Cross-Cloud Conversational Analytics bridges the divide via governed Model Context Protocol (MCP) endpoints and BigQuery cross-cloud federation—delivering one conversational interface across clouds.
+          </p>
+        </div>
+      </article>
+
+      <!-- SECTION 02: CORE CAPABILITIES & LIVE ANI-LABS MANIFEST -->
+      <section id="sec-capabilities" class="doc-section">
+        <div class="section-eyebrow">02 · Functional Capabilities &amp; Live Deployment</div>
+        <h2>What the Analytics Agent Delivers Today in ani-labs</h2>
+        <p class="section-intro">
+          Verified live in project <code>ani-labs</code> (<code>5473845300</code>), the solution combines a Vertex AI Agent Engine runtime (<code>Analytics Agent</code>) and a Gemini Enterprise assistant (<code>Cross Cloud Analyst Agent</code>) with serverless Cloud Run MCP bridges. Filter capabilities by functional domain below.
+        </p>
+
+        <div class="filter-bar" role="toolbar" aria-label="Filter Capabilities">
+          <button class="filter-chip is-active" type="button" data-cap-filter="all">All Capabilities (6)</button>
+          <button class="filter-chip" type="button" data-cap-filter="reasoning">Agentic Reasoning &amp; SQL</button>
+          <button class="filter-chip" type="button" data-cap-filter="connectivity">Zero-Copy Connectivity</button>
+          <button class="filter-chip" type="button" data-cap-filter="governance">Safety &amp; Observability</button>
+        </div>
+
+        <div id="cap-cards-grid" class="cap-grid">
+          <div class="cap-card" data-cap-cat="reasoning">
+            <div>
+              <span class="badge badge-teal">Reasoning &amp; Planning</span>
+              <h3>Multi-Cloud Intent Decomposition</h3>
+              <p>Automatically parses compound business questions and maps sub-questions to the authoritative engine: AWS PostgreSQL for ledgers, AWS MySQL for CRM/tickets, and BigQuery for app telemetry &amp; ML risk scores.</p>
+            </div>
+            <div class="cap-meta-foot">Tools: query_postgres · query_mysql · query_bigquery</div>
+          </div>
+
+          <div class="cap-card" data-cap-cat="reasoning">
+            <div>
+              <span class="badge badge-teal">Polyglot SQL</span>
+              <h3>Cross-Dialect SQL Synthesis &amp; Self-Correction</h3>
+              <p>Generates dialect-accurate SQL across PostgreSQL (<code>psycopg2</code>), MySQL (<code>pymysql</code>), and BigQuery Standard SQL—inspecting database error diagnostics to reformulate syntax automatically without repeating failed queries.</p>
+            </div>
+            <div class="cap-meta-foot">Dialects: PG 15 · MySQL 8 · GoogleSQL</div>
+          </div>
+
+          <div class="cap-card" data-cap-cat="connectivity">
+            <div>
+              <span class="badge badge-blue">Zero-Copy Correlation</span>
+              <h3>Selective Pruning &amp; Batched Entity Resolution</h3>
+              <p>Executes the highest-selectivity filter first (e.g., <code>fraud_risk_score &gt; 0.9</code> in BigQuery), extracts matched <code>customer_email</code> keys, and batches downstream lookups via <code>WHERE email IN (...)</code> without N+1 query loops.</p>
+            </div>
+            <div class="cap-meta-foot">Universal Key: email == customer_email</div>
+          </div>
+
+          <div class="cap-card" data-cap-cat="connectivity">
+            <div>
+              <span class="badge badge-blue">Cloud Run Transport</span>
+              <h3>Stateless HTTP MCP &amp; Async Worker Isolation</h3>
+              <p>Uses <code>StreamableHTTPServerTransport</code> in stateless JSON mode with custom ASGI <code>/sse</code> routing (eliminating 307 POST redirects) and <code>asyncio.to_thread()</code> worker pools so blocking DB drivers never starve health checks.</p>
+            </div>
+            <div class="cap-meta-foot">Transport: JSON-RPC over Stateless HTTP POST</div>
+          </div>
+
+          <div class="cap-card" data-cap-cat="governance">
+            <div>
+              <span class="badge badge-emerald">Operational Safety</span>
+              <h3>Read-Only Enforcement &amp; Mutation Refusal</h3>
+              <p>Strictly restricts SQL execution to read-only queries across all three engines, politely declining <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, or DDL requests while separating transactional actions behind explicit HITL workflows.</p>
+            </div>
+            <div class="cap-meta-foot">Policy: Strictly Read-Only Analytical Scope</div>
+          </div>
+
+          <div class="cap-card" data-cap-cat="governance">
+            <div>
+              <span class="badge badge-emerald">Enterprise Telemetry</span>
+              <h3>SPIFFE Agent Identity, mTLS &amp; OpenTelemetry</h3>
+              <p>Deployed on Vertex AI Agent Engine with workload <code>AGENT_IDENTITY</code>, automatic mTLS endpoints, GCP token-sharing isolation, and OpenTelemetry GenAI message tracing enabled out of the box.</p>
+            </div>
+            <div class="cap-meta-foot">Runtime: google-adk · OTel GenAI Enabled</div>
+          </div>
+        </div>
+
+        <h3>Verified Live Resource Inventory in ani-labs (projects/5473845300)</h3>
+        <p class="section-intro">
+          Every component below was verified directly against the live <code>ani-labs</code> control plane in <code>us-west1</code> and <code>global</code>:
+        </p>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Layer</th>
+                <th>Live Resource Name / Service</th>
+                <th>Engine / Spec</th>
+                <th>Role in Cross-Cloud Capability</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge badge-teal">ADK Agent Runtime</span></td>
+                <td><strong>Analytics Agent</strong><br><code>reasoningEngines/4942427912155430912</code></td>
+                <td><code>google-adk</code> (<code>us-west1</code>)<br>SPIFFE <code>AGENT_IDENTITY</code> + mTLS + OTel</td>
+                <td>Programmatic multi-tool ADK analytical reasoning engine with session state &amp; telemetry isolation.</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-blue">Gemini Enterprise</span></td>
+                <td><strong>Cross Cloud Analyst Agent</strong><br><code>engines/ani-labs-ge_.../agents/613639119782760891</code></td>
+                <td><code>gemini-3.1-pro-preview</code><br>State: <code>ENABLED</code></td>
+                <td>Conversational workspace UI wired to custom MCP data connectors for self-service cross-database Q&amp;A.</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-slate">Cloud Run MCP #1</span></td>
+                <td><strong>db-query-api</strong><br><code>db-query-api-xlafjd7p4q-uw.a.run.app/sse</code></td>
+                <td>Python MCP <code>1.29.0</code> · <code>us-west1</code><br><code>psycopg2-binary</code></td>
+                <td>Stateless MCP bridge executing read-only SQL against AWS EC2 PostgreSQL (<code>finance_db</code>).</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-slate">Cloud Run MCP #2</span></td>
+                <td><strong>db-query-api-mysql</strong><br><code>db-query-api-mysql-xlafjd7p4q-uw.a.run.app/sse</code></td>
+                <td>Python MCP <code>1.29.0</code> · <code>us-west1</code><br><code>pymysql</code></td>
+                <td>Stateless MCP bridge executing read-only SQL against AWS EC2 MySQL (<code>engagement_db</code>).</td>
+              </tr>
+              <tr>
+                <td><span class="badge badge-slate">Cloud Run MCP #3</span></td>
+                <td><strong>mcp-server-bigquery</strong><br><code>mcp-server-bigquery-xlafjd7p4q-uw.a.run.app/sse</code></td>
+                <td>Python MCP <code>1.29.0</code> · <code>us-west1</code><br><code>google-cloud-bigquery</code></td>
+                <td>Stateless MCP bridge querying GCP BigQuery dataset <code>ani-labs.ccca</code> (66.0M+ rows).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 03: INTERACTIVE CROSS-CLOUD REASONING & SQL TRACE EXPLORER -->
+      <section id="sec-traces" class="doc-section">
+        <div class="section-eyebrow">03 · Interactive Capability Walkthrough</div>
+        <h2>Cross-Cloud Query &amp; Reasoning Trace Explorer</h2>
+        <p class="section-intro">
+          Select a business prompt below to inspect how the <strong>Analytics Agent</strong> decomposes intent, dispatches targeted read-only queries across AWS and GCP, correlates records via masked customer keys, and enforces operational guardrails.
+        </p>
+
+        <div class="trace-workbench">
+          <div class="trace-selector-list" role="tablist" aria-label="Sample Cross-Cloud Capabilities">
+            <button id="trace-btn-0" class="trace-prompt-btn is-selected" type="button" data-trace="0">
+              <span class="badge badge-teal">Capability 01 · Customer 360</span>
+              <span class="trace-btn-title">Single-Entity Tri-Cloud Triage</span>
+              <span class="trace-btn-sub">AWS Ledger + AWS Support + BQ Churn Score</span>
+            </button>
+
+            <button id="trace-btn-1" class="trace-prompt-btn" type="button" data-trace="1">
+              <span class="badge badge-blue">Capability 02 · Risk Cohort</span>
+              <span class="trace-btn-title">High-Fraud Cohort &amp; Credit Exposure</span>
+              <span class="trace-btn-sub">50M BQ Risk Profiles → Batched AWS Lookup</span>
+            </button>
+
+            <button id="trace-btn-2" class="trace-prompt-btn" type="button" data-trace="2">
+              <span class="badge badge-emerald">Capability 03 · Executive Pulse</span>
+              <span class="trace-btn-title">Telemetry vs. Ledger Settlement Check</span>
+              <span class="trace-btn-sub">16M BQ App Events + PG Volume + MySQL Backlog</span>
+            </button>
+
+            <button id="trace-btn-3" class="trace-prompt-btn" type="button" data-trace="3">
+              <span class="badge badge-amber">Capability 04 · Safety Guardrail</span>
+              <span class="trace-btn-title">Crash Diagnosis + Write-Action Refusal</span>
+              <span class="trace-btn-sub">Read-Only SQL Boundary &amp; HITL Separation</span>
+            </button>
+          </div>
+
+          <div class="trace-stage-card" aria-live="polite">
+            <div class="trace-prompt-banner">
+              <div class="trace-kicker">Natural-Language User Prompt</div>
+              <p id="trace-query-text" class="trace-user-query">
+                “Look up high-priority checking customer Noah M. (n***n@example-bank.com) in Postgres, check if he has open support tickets in MySQL, and pull his latest churn risk score from BigQuery.”
+              </p>
+            </div>
+
+            <div id="trace-steps-container" class="trace-steps-stack">
+              <!-- Populated dynamically and deterministically via safe DOM APIs in app.js -->
+            </div>
+
+            <div class="trace-answer-box">
+              <div class="trace-kicker">Synthesized Analytics Agent Response (PII Masked)</div>
+              <p id="trace-answer-output" class="trace-answer-text">
+                Customer n***n@example-bank.com holds an active Checking balance of $24,850.00 in AWS finance_db, currently has 1 Open support ticket (#4109: “Wire transfer pending verification”) in AWS engagement_db, and carries an elevated BigQuery churn_risk_score of 0.87 (calculated within the last 24h). Recommended action: prioritize ticket #4109 resolution via specialist queue.
+              </p>
+              <div class="trace-telemetry-row">
+                <span id="trace-metric-hops">Tool Calls: 3 (PG + MySQL + BQ)</span>
+                <span id="trace-metric-bytes">Cross-Cloud Payload: 1.4 KB (Zero Raw Table Copy)</span>
+                <span id="trace-metric-latency">Typical Latency: ~3.4 s</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 04: UNIFIED HYBRID DATA ESTATE & SCHEMA EXPLORER -->
+      <section id="sec-schema" class="doc-section">
+        <div class="section-eyebrow">04 · Hybrid Data Estate &amp; Schema Graph</div>
+        <h2>Three Isolated Engines Unified by One Identity Key</h2>
+        <p class="section-intro">
+          In <code>ani-labs</code>, transactional banking records, CRM engagement logs, and 66M+ analytical/ML rows sit across physically isolated engines. Click each data tier below to inspect live schemas, key relationships, and verified table scale.
+        </p>
+
+        <div class="estate-bridge-banner">
+          <div>
+            <strong>Universal Cross-Cloud Join Key:</strong>
+            <code>customers.email</code> (AWS PostgreSQL) ↔ <code>customer_email</code> (AWS MySQL &amp; GCP BigQuery <code>ccca</code>)
+          </div>
+          <span class="badge badge-emerald">66.0M+ Verified Warehouse Rows</span>
+        </div>
+
+        <div class="estate-tabs" role="tablist" aria-label="Hybrid Data Tiers">
+          <button id="estate-tab-bq" class="estate-tab-btn is-selected" type="button" data-estate="bq">
+            <span class="badge badge-teal">GCP Warehouse · ani-labs.ccca</span>
+            <span class="estate-tab-title">BigQuery Telemetry &amp; ML Risk</span>
+            <span class="estate-tab-sub">66,000,061 rows · 6.41 GB live</span>
+          </button>
+
+          <button id="estate-tab-pg" class="estate-tab-btn" type="button" data-estate="pg">
+            <span class="badge badge-blue">AWS Operational · TCP 5432</span>
+            <span class="estate-tab-title">PostgreSQL (finance_db)</span>
+            <span class="estate-tab-sub">Core Banking Customers, Accounts &amp; Txns</span>
+          </button>
+
+          <button id="estate-tab-my" class="estate-tab-btn" type="button" data-estate="my">
+            <span class="badge badge-slate">AWS Operational · TCP 3306</span>
+            <span class="estate-tab-title">MySQL (engagement_db)</span>
+            <span class="estate-tab-sub">Support Tickets &amp; Marketing Campaigns</span>
+          </button>
+        </div>
+
+        <div id="schema-cards-container" class="schema-tables-grid" aria-live="polite">
+          <!-- Populated safely via createElement in app.js -->
+        </div>
+      </section>
+
+      <!-- SECTION 05: BIFURCATED ARCHITECTURE & CONTEXT-WINDOW PHYSICS (FROM PREPPER) -->
+      <section id="sec-architecture" class="doc-section">
+        <div class="section-eyebrow">05 · Scaling Architecture &amp; Context-Window Physics</div>
+        <h2>From v1 Live Connectivity Baseline to v2 Bifurcated Enterprise Scale</h2>
+        <p class="section-intro">
+          A critical architectural insight from engineering review: <strong>LLMs excel at intent planning and narrative synthesis, not relational hash-joins inside token memory.</strong> While the v1 <code>ani-labs</code> baseline proves zero-copy multi-tool orchestration using a <code>LIMIT 5</code> prompt cap, scaling to 50M+ rows requires bifurcating queries by cardinality and adopting Google’s first-party MCP stack.
+        </p>
+
+        <div class="arch-toolbar">
+          <div class="segmented-control" role="group" aria-label="Architecture Topology Mode">
+            <button id="btn-arch-v1" class="segment-btn" type="button">v1: Live ani-labs Baseline</button>
+            <button id="btn-arch-v2" class="segment-btn is-active" type="button">v2: Enterprise Bifurcated Target</button>
+          </div>
+          <span class="arch-hint">Click any topology node below to compare v1 baseline vs. v2 production capabilities</span>
+        </div>
+
+        <div class="arch-workbench">
+          <div class="topology-stage" aria-label="Interactive Architecture Topology">
+            <div class="cloud-zone">
+              <div class="zone-label">
+                <span>GCP Agentic Reasoning &amp; Identity Plane</span>
+                <span id="zone-badge-top" class="badge badge-emerald">Cardinality-Aware Router</span>
+              </div>
+              <div class="node-grid-row">
+                <button id="node-agent" class="arch-node-btn is-selected" type="button" data-node="agent">
+                  <span id="node-agent-title" class="node-title">Analytics Agent (ADK + GE)</span>
+                  <span id="node-agent-sub" class="node-sub">Routes Entity (&lt;50) vs. OLAP (50M+)</span>
+                </button>
+                <button id="node-security" class="arch-node-btn" type="button" data-node="security">
+                  <span id="node-security-title" class="node-title">End-User OIDC + Model Armor</span>
+                  <span id="node-security-sub" class="node-sub">Per-User RLS + Prompt Injection Shield</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="connector-top-label" class="flow-connector">
+              ▼ OIDC Authenticated Tool Calls · Lazy Dataplex Schema Lookup ▼
+            </div>
+
+            <div class="cloud-zone">
+              <div class="zone-label">
+                <span>GCP First-Party MCP &amp; Federated Compute Layer</span>
+                <span id="zone-badge-mid" class="badge badge-teal">Zero Custom Connector Code</span>
+              </div>
+              <div class="node-grid-row">
+                <button id="node-bridge" class="arch-node-btn" type="button" data-node="bridge">
+                  <span id="node-bridge-title" class="node-title">MCP Toolbox (genai-toolbox)</span>
+                  <span id="node-bridge-sub" class="node-sub">Pooled · Parameterized SQL (ANY($1))</span>
+                </button>
+                <button id="node-bq" class="arch-node-btn" type="button" data-node="bq">
+                  <span id="node-bq-title" class="node-title">Managed BQ MCP + GDA API</span>
+                  <span id="node-bq-sub" class="node-sub">bigquery.googleapis.com/mcp + LookML</span>
+                </button>
+              </div>
+            </div>
+
+            <div id="connector-bottom-label" class="flow-connector">
+              ▼ HA VPN / Cloud Interconnect · BQ EXTERNAL_QUERY &amp; Omni Pushdown ▼
+            </div>
+
+            <div class="cloud-zone">
+              <div class="zone-label">
+                <span>AWS Hybrid Estate (Read Replicas + S3 Lakes)</span>
+                <span id="zone-badge-bot" class="badge badge-blue">Zero Primary OLTP Risk</span>
+              </div>
+              <div class="node-grid-row">
+                <button id="node-aws" class="arch-node-btn" type="button" data-node="aws">
+                  <span id="node-aws-title" class="node-title">AWS Read Replicas &amp; S3 Iceberg</span>
+                  <span id="node-aws-sub" class="node-sub">5s Timeout + Local BigQuery Omni Compute</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="inspector-card" aria-live="polite">
+            <div class="inspector-meta">
+              <h3 id="inspector-title">Analytics Agent — Cardinality Router</h3>
+              <span id="inspector-badge" class="badge badge-emerald">1P Target Pattern</span>
+            </div>
+            <div>
+              <div class="inspector-block-label">Capability &amp; Architectural Role</div>
+              <p id="inspector-role" class="inspector-text">
+                Dynamically separates operational single-customer lookups (&lt;50 keys) from population-wide analytical aggregations across the 50M-row customer_risk_profiles table.
+              </p>
+            </div>
+            <div>
+              <div class="inspector-block-label">Why This Upgrades v1</div>
+              <p id="inspector-upgrade" class="inspector-text">
+                Eliminates silent LIMIT 5 sampling distortion on executive KPIs while keeping token usage flat via ADK sub-agent scratchpad isolation.
+              </p>
+            </div>
+            <div>
+              <div class="inspector-block-label">Implementation Reference</div>
+              <pre id="inspector-snippet" class="inspector-code">-- Path B: Population Join Pushed Down to BigQuery Slots
+SELECT r.risk_tier, COUNT(*) AS users, SUM(aws.balance) AS exposure
+FROM `ani-labs.ccca.customer_risk_profiles` r
+JOIN EXTERNAL_QUERY('ani-labs.us-west1.aws_pg_ro',
+  'SELECT email, balance FROM customer_balances_v') aws
+ON r.customer_email = aws.email
+WHERE r.churn_risk_score &gt; 0.80
+GROUP BY 1;</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="routing-cards">
+          <div class="route-card">
+            <div>
+              <span class="badge badge-teal">FAST PATH A · OPERATIONAL ENTITY TRIAGE</span>
+              <h3>MCP Toolbox for Databases (genai-toolbox)</h3>
+              <p style="margin-top: 8px; font-size: 0.88rem; color: var(--ink-secondary);">
+                Designed for high-precision, low-latency lookups on specific customers, accounts, or small cohorts (e.g., live support triage or fraud analyst case review).
+              </p>
+              <ul class="compact-list">
+                <li>Replaces custom Python DB wrappers with declarative <code>tools.yaml</code> backed by native Go connection pooling.</li>
+                <li>Binds typed parameters (<code>WHERE c.email = ANY($1::text[])</code>) against AWS Read Replicas over HA VPN.</li>
+                <li>Pairs with <strong>Dataplex Knowledge Catalog</strong> lazy schema discovery so prompt context stays compact even at 2,500+ enterprise tables.</li>
+              </ul>
+            </div>
+            <div class="route-specs">
+              <div>
+                <div class="spec-k">Optimal Cardinality</div>
+                <div class="spec-v">1 – 50 Entities</div>
+              </div>
+              <div>
+                <div class="spec-k">Typical Tool Latency</div>
+                <div class="spec-v">&lt; 1.5s Pooled</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="route-card">
+            <div>
+              <span class="badge badge-blue">ANALYTICAL PATH B · POPULATION OLAP</span>
+              <h3>Managed BigQuery MCP + Federation / BigQuery Omni</h3>
+              <p style="margin-top: 8px; font-size: 0.88rem; color: var(--ink-secondary);">
+                Designed for whole-population aggregations, cohort trends, and executive KPIs across <code>ani-labs.ccca</code> (66M+ rows) and AWS datasets.
+              </p>
+              <ul class="compact-list">
+                <li>Uses zero-infrastructure <code>https://bigquery.googleapis.com/mcp</code> and <strong>Conversational Analytics API</strong> (<code>geminidataanalytics</code>) with governed LookML metrics.</li>
+                <li>Executes cross-cloud joins inside BigQuery Dremel slots via <code>EXTERNAL_QUERY()</code> (AWS RDS) or locally in AWS via <strong>BigQuery Omni</strong> (AWS S3 Iceberg).</li>
+                <li>Returns only compact aggregated summary tables (&lt;25 rows) to Gemini—100% mathematical accuracy with zero token overflow.</li>
+              </ul>
+            </div>
+            <div class="route-specs">
+              <div>
+                <div class="spec-k">Optimal Cardinality</div>
+                <div class="spec-v">100 – 50,000,000+ Rows</div>
+              </div>
+              <div>
+                <div class="spec-k">Join Compute Engine</div>
+                <div class="spec-v">BigQuery / Omni Slots</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Cardinality & Context Physics Simulator -->
+        <div class="sim-container">
+          <div class="arch-toolbar">
+            <div>
+              <h3>Interactive Scale &amp; Context-Window Simulator</h3>
+              <p style="font-size: 0.83rem; color: var(--ink-secondary);">Test against real <code>ani-labs.ccca</code> scale (up to 50M rows) across routing strategies:</p>
+            </div>
+            <div class="segmented-control" role="group" aria-label="Simulator Strategy">
+              <button id="sim-mode-v1-capped" class="segment-btn" type="button">v1 Baseline (LIMIT 5)</button>
+              <button id="sim-mode-v1-uncapped" class="segment-btn" type="button">Raw LLM Context Join</button>
+              <button id="sim-mode-v2" class="segment-btn is-active" type="button">v2 Bifurcated Pushdown</button>
+            </div>
+          </div>
+
+          <div class="sim-controls-grid">
+            <div class="sim-control-box">
+              <div class="sim-label-row">
+                <label class="sim-label" for="slider-rows">Matched Customer Cohort Size</label>
+                <span id="val-rows" class="sim-readout">50,000 rows</span>
+              </div>
+              <input id="slider-rows" type="range" min="0" max="5" step="1" value="3">
+            </div>
+
+            <div class="sim-control-box">
+              <div class="sim-label-row">
+                <label class="sim-label" for="slider-tables">Enterprise Schemas in Catalog</label>
+                <span id="val-tables" class="sim-readout">250 tables</span>
+              </div>
+              <input id="slider-tables" type="range" min="0" max="4" step="1" value="2">
+            </div>
+          </div>
+
+          <div class="sim-metrics-grid">
+            <div class="sim-kpi-card">
+              <div class="sim-kpi-title">Prompt Token Load</div>
+              <div id="kpi-tokens" class="sim-kpi-val">3,400</div>
+              <div id="kpi-tokens-sub" class="sim-kpi-sub">Lazy Dataplex schema + summary</div>
+            </div>
+            <div class="sim-kpi-card">
+              <div class="sim-kpi-title">Analytical Accuracy</div>
+              <div id="kpi-accuracy" class="sim-kpi-val">100% Exact</div>
+              <div id="kpi-accuracy-sub" class="sim-kpi-sub">Full cohort computed in SQL slots</div>
+            </div>
+            <div class="sim-kpi-card">
+              <div class="sim-kpi-title">Est. P95 Turn Latency</div>
+              <div id="kpi-latency" class="sim-kpi-val">3.1 s</div>
+              <div id="kpi-latency-sub" class="sim-kpi-sub">Pooled + parallel pushdown</div>
+            </div>
+            <div class="sim-kpi-card">
+              <div class="sim-kpi-title">Architecture Status</div>
+              <div id="kpi-status" class="sim-kpi-val">Production Fit</div>
+              <div id="kpi-status-sub" class="sim-kpi-sub">Zero context overflow risk</div>
+            </div>
+          </div>
+
+          <p id="sim-diagnosis-text" class="sim-diagnosis">
+            v2 Bifurcated Routing pushes the 50,000-row join down to BigQuery EXTERNAL_QUERY / Omni and injects only the 4 relevant table schemas from Dataplex—delivering 100% exact aggregations in ~3.1s using 3,400 tokens.
+          </p>
+        </div>
+      </section>
+
+      <!-- SECTION 06: ENTERPRISE SECURITY, DBA PROTECTION & FINOPS -->
+      <section id="sec-governance" class="doc-section">
+        <div class="section-eyebrow">06 · Trust, Security &amp; Operational Guardrails</div>
+        <h2>Enterprise CISO, Production DBA &amp; FinOps Controls</h2>
+        <p class="section-intro">
+          Connecting conversational AI to operational banking and CRM data requires defense-in-depth across identity, SQL synthesis, workload isolation, and cloud spend.
+        </p>
+
+        <div class="cap-grid">
+          <div class="cap-card">
+            <div>
+              <span class="badge badge-rose">Identity &amp; Access</span>
+              <h3>End-User OIDC &amp; Row-Level Security</h3>
+              <p>Eliminates “Confused Deputy” shared credentials by requiring Cloud Run IAM + MCP Toolbox <code>authRequired</code> OIDC tokens, propagating caller identity into BigQuery Row Access Policies (<code>SESSION_USER()</code>) and Postgres session claims.</p>
+            </div>
+            <div class="cap-meta-foot">Control: Per-User RBAC + Audit Attribution</div>
+          </div>
+
+          <div class="cap-card">
+            <div>
+              <span class="badge badge-rose">Prompt-Injection Defense</span>
+              <h3>Parameterized SQL + Model Armor</h3>
+              <p>Free-text columns like <code>support_tickets.issue</code> carry Indirect Prompt Injection risk. Binding typed parameters in MCP Toolbox (<code>$1</code>) eliminates arbitrary SQL stacking, reinforced by Google Cloud Model Armor screening.</p>
+            </div>
+            <div class="cap-meta-foot">Control: Zero Raw SQL Concatenation</div>
+          </div>
+
+          <div class="cap-card">
+            <div>
+              <span class="badge badge-amber">DBA Workload Safety</span>
+              <h3>Read Replicas &amp; 5s Statement Caps</h3>
+              <p>Protects primary AWS OLTP transactions during peak traffic by routing exclusively to dedicated Read Replicas over HA VPN, enforcing bounded connection pools, <code>default_transaction_read_only = on</code>, and <code>statement_timeout = '5s'</code>.</p>
+            </div>
+            <div class="cap-meta-foot">Control: Zero Primary CPU Contention</div>
+          </div>
+
+          <div class="cap-card">
+            <div>
+              <span class="badge badge-amber">FinOps Cost Governance</span>
+              <h3>Dry-Run Pre-Checks &amp; Byte Circuit Breakers</h3>
+              <p>Prevents runaway scans across multi-gigabyte event tables (<code>ccca.app_events</code>) via mandatory partition filters, BigQuery <code>dry_run=True</code> validation, and hard <code>maximum_bytes_billed</code> per-query caps.</p>
+            </div>
+            <div class="cap-meta-foot">Control: Predictable Cost / 1,000 Prompts</div>
+          </div>
+
+          <div class="cap-card">
+            <div>
+              <span class="badge badge-teal">Metric Consistency</span>
+              <h3>Looker &amp; Conversational Analytics Semantics</h3>
+              <p>Prevents two executives from getting different definitions of “Active Deposit Balance” or “High Churn” by anchoring analytical queries on governed LookML measures and BigQuery semantic views.</p>
+            </div>
+            <div class="cap-meta-foot">Control: Governed Single Source of Truth</div>
+          </div>
+
+          <div class="cap-card">
+            <div>
+              <span class="badge badge-blue">Context Hygiene</span>
+              <h3>Truncation Metadata &amp; PII Masking</h3>
+              <p>Replaces silent row caps with explicit <code>has_more</code> + <code>total_count_estimate</code> headers (prompting SQL aggregation instead of partial sampling) and enforces column-level PII masking on sensitive customer identifiers.</p>
+            </div>
+            <div class="cap-meta-foot">Control: Zero Silent Sampling Drift</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 07: REAL-WORLD INDUSTRY SCENARIOS & ARCHITECTURAL FIT (FROM PREPPER) -->
+      <section id="sec-usecases" class="doc-section">
+        <div class="section-eyebrow">07 · Where Cross-Cloud Conversational Analytics Wins</div>
+        <h2>Target Industry Scenarios, Value Pitches &amp; Fit Guardrails</h2>
+        <p class="section-intro">
+          Cross-Cloud Conversational Analytics delivers maximum ROI in <strong>“Split-Gravity” enterprises</strong>—where Google Cloud already anchors analytics, ML, contact center, or marketing data (BigQuery, CCAI, GA4, Gemini Enterprise) while operational state or legacy lakes remain on AWS. Explore the 4 high-conviction industry plays and 2 architectural guardrails below.
+        </p>
+
+        <div class="scenario-workbench">
+          <div class="scenario-nav-list" role="tablist" aria-label="Industry Scenarios and Guardrails">
+            <button id="scen-btn-0" class="scenario-tab-btn is-selected" type="button" data-scen="mna">
+              <span class="badge badge-emerald">Scenario 01 · High Fit</span>
+              <span class="scenario-tab-title">Post-M&amp;A “Split-Brain” Enterprises</span>
+              <span class="scenario-tab-ind">Banking, Insurance, Telecom, PE Roll-ups</span>
+            </button>
+
+            <button id="scen-btn-1" class="scenario-tab-btn" type="button" data-scen="ccai">
+              <span class="badge badge-emerald">Scenario 02 · High Fit</span>
+              <span class="scenario-tab-title">CCAI &amp; Live Support Customer-360</span>
+              <span class="scenario-tab-ind">Retail, Airlines, FinTech, Telco</span>
+            </button>
+
+            <button id="scen-btn-2" class="scenario-tab-btn" type="button" data-scen="ga4">
+              <span class="badge badge-emerald">Scenario 03 · High Fit</span>
+              <span class="scenario-tab-title">GA4 / Google Ads (BQ) + AWS Checkout</span>
+              <span class="scenario-tab-ind">E-Commerce, D2C, Gaming, Subscription Media</span>
+            </button>
+
+            <button id="scen-btn-3" class="scenario-tab-btn" type="button" data-scen="sovereign">
+              <span class="badge badge-emerald">Scenario 04 · High Fit</span>
+              <span class="scenario-tab-title">Ring-Fenced PII &amp; Sovereignty Enclaves</span>
+              <span class="scenario-tab-ind">Capital Markets, Healthcare, Global Regulated</span>
+            </button>
+
+            <button id="scen-btn-4" class="scenario-tab-btn" type="button" data-scen="guardrail_cdc">
+              <span class="badge badge-amber">Guardrail 01 · Use Datastream CDC</span>
+              <span class="scenario-tab-title">High-Concurrency Executive BI Dashboards</span>
+              <span class="scenario-tab-ind">500+ Repetitive Cross-Cloud Scans / Day</span>
+            </button>
+
+            <button id="scen-btn-5" class="scenario-tab-btn" type="button" data-scen="guardrail_aws">
+              <span class="badge badge-rose">Guardrail 02 · Non-Target Fit</span>
+              <span class="scenario-tab-title">100% AWS Estate with Zero GCP Anchor</span>
+              <span class="scenario-tab-ind">Single-Cloud Non-GCP Workloads</span>
+            </button>
+          </div>
+
+          <div class="scenario-detail-card" aria-live="polite">
+            <div class="inspector-meta">
+              <h3 id="scen-title">Scenario 01: Post-M&amp;A “Split-Brain” Enterprises</h3>
+              <span id="scen-badge" class="badge badge-emerald">Tier-1 Split-Gravity Fit</span>
+            </div>
+
+            <div class="scenario-detail-grid">
+              <div class="scenario-field-box">
+                <div class="inspector-block-label">Target Industries &amp; Executive Buyer</div>
+                <p id="scen-industries" class="inspector-text">
+                  Regional &amp; Tier-1 Banks post-acquisition, Insurance carriers, Telecom operators, Healthcare networks. Buyer: CDO / VP of Enterprise Data &amp; AI.
+                </p>
+              </div>
+              <div class="scenario-field-box">
+                <div class="inspector-block-label">Asymmetric Google Cloud Anchor</div>
+                <p id="scen-anchor" class="inspector-text">
+                  Acquiring parent already standardized risk models, telemetry, and executive intelligence on BigQuery + Gemini Enterprise; acquired subsidiary sits on AWS RDS/S3 with an 18–36 month consolidation queue.
+                </p>
+              </div>
+              <div class="scenario-field-box">
+                <div class="inspector-block-label">Operational Business Trigger</div>
+                <p id="scen-trigger" class="inspector-text">
+                  Leadership needs immediate cross-entity churn exposure, VIP retention, and cross-sell visibility this quarter without waiting two years for core banking ETL re-platforming.
+                </p>
+              </div>
+              <div class="scenario-field-box">
+                <div class="inspector-block-label">Recommended Deployment Pattern</div>
+                <p id="scen-pattern" class="inspector-text">
+                  BigQuery Omni over subsidiary AWS S3/Iceberg lakes (local AWS compute, zero raw table egress) + MCP Toolbox parameterized lookups on AWS read replicas for individual customer drill-downs.
+                </p>
+              </div>
+            </div>
+
+            <div class="pitch-script-box">
+              <div class="inspector-block-label">Executive Value Proposition / Architectural Guidance</div>
+              <p id="scen-pitch" class="pitch-quote">
+                “Don’t let an 18-month post-merger database consolidation hold your AI roadmap hostage. Keep acquired ledgers in AWS where they run today, keep enterprise risk models in BigQuery, and deploy Gemini Enterprise as one governed intelligence plane in weeks—analyzing S3 lakes in-place via BigQuery Omni and drilling into live account state via zero-trust MCP Toolbox.”
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 08: 1P GOOGLE CLOUD EVOLUTION & CAPABILITY MATURITY ROADMAP -->
+      <section id="sec-roadmap" class="doc-section">
+        <div class="section-eyebrow">08 · First-Party Stack Alignment &amp; Roadmap</div>
+        <h2>Evolving Custom Connectors to Declarative 1P Primitives</h2>
+        <p class="section-intro">
+          The live <code>ani-labs</code> deployment validated end-to-end cross-cloud conversational reasoning. Transitioning from custom Python microservices (~540 LOC) to Google Cloud’s first-party <strong>MCP Toolbox for Databases</strong> and <strong>Managed BigQuery MCP</strong> eliminates connector maintenance while adding connection pooling, OIDC auth, and OpenTelemetry natively.
+        </p>
+
+        <div class="code-compare-grid">
+          <div class="code-window">
+            <div class="code-window-bar">
+              <span>v1 BASELINE · Custom Cloud Run Python Wrapper (main.py)</span>
+              <span>ani-labs Prototype</span>
+            </div>
+            <pre># Opens fresh TCP connection per call; manual prefix check
+def _query_postgres(sql: str):
+    conn = psycopg2.connect(
+        host=os.environ.get("POSTGRES_HOST"),
+        database=os.environ.get("POSTGRES_DB"),
+        user=os.environ.get("POSTGRES_USER"),
+        password=os.environ.get("POSTGRES_PASSWORD"),
+    )
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute(sql)
+    return cur.fetchall()
+
+# Plus separate mcp-server-bigquery container for BigQuery</pre>
+          </div>
+
+          <div class="code-window">
+            <div class="code-window-bar">
+              <span>v2 PRODUCTION · 1P MCP Toolbox (tools.yaml) + Managed BQ MCP</span>
+              <span>Zero Boilerplate</span>
+            </div>
+            <pre># 1. BigQuery uses zero-infra https://bigquery.googleapis.com/mcp
+# 2. AWS operational DBs use pooled, parameterized MCP Toolbox:
+sources:
+  aws-finance-replica:
+    kind: postgres
+    host: ${AWS_PG_REPLICA_VPN_HOST}
+    database: finance_db
+    user: ${PG_READONLY_USER}
+    password: ${SECRET_MANAGER_PG_PASS}
+
+tools:
+  lookup_customer_ledger:
+    kind: postgres-sql
+    source: aws-finance-replica
+    authRequired: [google-oidc]
+    statement: |
+      SELECT c.email, a.type, a.balance
+      FROM customers c JOIN accounts a ON c.id = a.customer_id
+      WHERE c.email = ANY($1::text[]) LIMIT 50;</pre>
+          </div>
+        </div>
+
+        <h3>Capability Maturity Tracker (Live ani-labs → Enterprise Production)</h3>
+        <p class="section-intro">
+          Toggle milestones below to inspect current baseline completion vs. Phase 1 and Phase 2 enterprise hardening gates:
+        </p>
+
+        <div class="checklist-grid">
+          <div class="phase-box">
+            <span class="badge badge-emerald">LIVE IN ANI-LABS TODAY (BASELINE)</span>
+            <label class="check-item">
+              <input id="chk-1" type="checkbox" checked>
+              <span>Deploy <strong>Analytics Agent</strong> on Vertex AI Agent Engine (<code>google-adk</code>, SPIFFE identity, mTLS, OTel)</span>
+            </label>
+            <label class="check-item">
+              <input id="chk-2" type="checkbox" checked>
+              <span>Enable <strong>Cross Cloud Analyst Agent</strong> in Gemini Enterprise (<code>ani-labs-ge</code>) with MCP connectors</span>
+            </label>
+            <label class="check-item">
+              <input id="chk-3" type="checkbox" checked>
+              <span>Stand up stateless Cloud Run MCP bridges for AWS PostgreSQL, AWS MySQL &amp; GCP BigQuery</span>
+            </label>
+            <label class="check-item">
+              <input id="chk-4" type="checkbox" checked>
+              <span>Load 66M+ analytical &amp; ML rows in <code>ani-labs.ccca</code> (<code>app_events</code> + <code>customer_risk_profiles</code>)</span>
+            </label>
+          </div>
+
+          <div class="phase-box">
+            <span class="badge badge-teal">PHASE 1 · 1P STACK &amp; FEDERATION</span>
+            <label class="check-item">
+              <input id="chk-5" type="checkbox">
+              <span>Swap custom <code>mcp-server-bigquery</code> to 1P Managed BigQuery MCP (<code>bigquery.googleapis.com/mcp</code>)</span>
+            </label>
+            <label class="check-item">
+              <input id="chk-6" type="checkbox">
+              <span>Migrate AWS PG/MySQL bridges to <strong>MCP Toolbox (genai-toolbox)</strong> with pooling &amp; parameterized SQL</span>
+            </label>
+          </div>
+
+          <div class="phase-box">
+            <span class="badge badge-blue">PHASE 2 · SCALE, SECURITY &amp; EVALS</span>
+            <label class="check-item">
+              <input id="chk-7" type="checkbox">
+              <span>Enable BigQuery <code>EXTERNAL_QUERY</code> / BigQuery Omni pushdown + HA VPN Read Replicas + OIDC RLS</span>
+            </label>
+            <label class="check-item">
+              <input id="chk-8" type="checkbox">
+              <span>Integrate Dataplex lazy schema lookup, Conversational Analytics semantic layer &amp; 100-query Golden Eval Suite</span>
+            </label>
+          </div>
+        </div>
+
+        <footer class="doc-footer">
+          <span>Cross-Cloud Conversational Analytics Capabilities Portal · Grounded on GCP Project <code>ani-labs</code></span>
+          <span>Switch to <strong>Executive Deck (10 Slides)</strong> in the top bar for full-screen presentation mode with presenter notes.</span>
+        </footer>
+      </section>
+    </main>
+  </div>
+
+  <!-- =====================================================================
+       MODE 2: FULL-SCREEN EXECUTIVE PRESENTATION (10 SLIDES + TALK TRACK)
+       ===================================================================== -->
+  <section id="deck-workspace" class="deck-stage" aria-label="Executive Presentation Deck">
+    <!-- Slide 01 -->
+    <div class="slide-frame is-active" data-slide-index="0">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 01 / 10 · Executive Overview</span>
+        <span class="badge badge-teal">Zero-Copy Cross-Cloud AI</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Cross-Cloud Conversational Analytics</h2>
+        <p class="slide-lead">
+          Unifying live AWS operational databases and 66M-row Google Cloud BigQuery warehouses behind a single conversational intelligence layer—without waiting months for cross-cloud ETL pipelines.
+        </p>
+        <div class="slide-grid-2">
+          <div class="slide-tile">
+            <h4>The Hybrid Enterprise Reality</h4>
+            <p>Over 80% of enterprise organizations split data across clouds—running core ledgers and CRM systems in AWS while scaling analytics, telemetry, and ML models in BigQuery.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>The Zero-Copy Breakthrough</h4>
+            <p>Instead of duplicating terabytes of regulated tables upfront, the <strong>Analytics Agent</strong> queries AWS and GCP in-place—fusing real-time transactional state with warehouse ML scores in seconds.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Strategic Outcome: Compresses enterprise AI Time-to-Value from 9-month ETL migrations to rapid deployment in days.
+      </div>
+    </div>
+
+    <!-- Slide 02 -->
+    <div class="slide-frame" data-slide-index="1">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 02 / 10 · Live Deployment in ani-labs</span>
+        <span class="badge badge-emerald">Verified Production Footprint</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Live Today in GCP Project ani-labs (us-west1)</h2>
+        <p class="slide-lead">
+          Anchored on deployed Google Cloud agent runtimes, stateless Cloud Run MCP bridges, and a 66.0M-row BigQuery dataset:
+        </p>
+        <div class="slide-grid-3">
+          <div class="slide-tile">
+            <h4>Dual Agent Surface</h4>
+            <p>• <strong>Analytics Agent</strong> on Vertex AI Agent Engine (<code>google-adk</code>, SPIFFE identity, mTLS, OTel).<br>• <strong>Cross Cloud Analyst Agent</strong> enabled in Gemini Enterprise (<code>ani-labs-ge</code>).</p>
+          </div>
+          <div class="slide-tile">
+            <h4>AWS Operational Tier</h4>
+            <p>• <strong>PostgreSQL (<code>finance_db</code>):</strong> <code>customers</code>, <code>accounts</code>, <code>transactions</code> via <code>db-query-api</code>.<br>• <strong>MySQL (<code>engagement_db</code>):</strong> <code>support_tickets</code>, <code>campaign_responses</code> via <code>db-query-api-mysql</code>.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>GCP BigQuery (ccca · 6.41 GB)</h4>
+            <p>• <strong><code>customer_risk_profiles</code>:</strong> 50,000,055 ML churn &amp; fraud rows.<br>• <strong><code>app_events</code>:</strong> 16,000,006 mobile &amp; web telemetry events.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Unified Identity Graph: All three isolated engines correlate seamlessly via <code>email</code> ↔ <code>customer_email</code> without bulk storage movement.
+      </div>
+    </div>
+
+    <!-- Slide 03 -->
+    <div class="slide-frame" data-slide-index="2">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 03 / 10 · Core Platform Capabilities</span>
+        <span class="badge badge-blue">6 Signature Capabilities</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Six Core Agentic Capabilities</h2>
+        <p class="slide-lead">
+          Purpose-built to turn complex multi-system SQL workflows into natural-language business answers:
+        </p>
+        <div class="slide-grid-3">
+          <div class="slide-tile">
+            <h4>1. Intent Decomposition</h4>
+            <p>Splits multi-domain questions automatically across Finance (PG), Support (MySQL), and Telemetry/ML (BigQuery).</p>
+          </div>
+          <div class="slide-tile">
+            <h4>2. Polyglot SQL &amp; Self-Healing</h4>
+            <p>Synthesizes dialect-accurate PostgreSQL, MySQL, and GoogleSQL with automatic syntax error recovery.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>3. Batched Entity Correlation</h4>
+            <p>Prunes the highest-selectivity cohort first and batches downstream <code>IN (...)</code> / <code>ANY($1)</code> lookups with zero N+1 loops.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>4. Stateless Async Transport</h4>
+            <p>Cloud Run JSON-RPC <code>/sse</code> routing with <code>asyncio.to_thread()</code> worker pools eliminates 307 redirects and 504 timeouts.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>5. Read-Only Safety Boundary</h4>
+            <p>Enforces read-only analytical queries and isolates write mutations behind explicit Human-in-the-Loop tools.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>6. Agent Identity &amp; OTel</h4>
+            <p>Native SPIFFE workload identity, mTLS transport, token-sharing isolation, and OpenTelemetry GenAI traces.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Interactive SQL &amp; reasoning traces for all capability patterns are available in Capabilities Doc Mode (Section 03).
+      </div>
+    </div>
+
+    <!-- Slide 04 -->
+    <div class="slide-frame" data-slide-index="3">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 04 / 10 · Multi-Hop Execution Flow</span>
+        <span class="badge badge-teal">End-to-End Trace</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Anatomy of a Zero-Copy Cross-Cloud Turn</h2>
+        <p class="slide-lead">
+          How the <strong>Analytics Agent</strong> resolves a high-priority customer escalation across three databases in ~3.4 seconds:
+        </p>
+        <div class="slide-grid-2">
+          <div class="slide-tile">
+            <h4>Step 1–2: Selective AWS &amp; BQ Retrieval</h4>
+            <p>1. Queries AWS Postgres <code>finance_db</code> for customer <code>n***n@example-bank.com</code> ($24,850 checking balance).<br>2. Queries AWS MySQL <code>engagement_db</code> for active tickets (Ticket #4109: wire verification pending).</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Step 3–4: ML Enrichment &amp; Synthesis</h4>
+            <p>3. Queries BigQuery <code>ccca.customer_risk_profiles</code> (50M rows) for real-time <code>churn_risk_score</code> (<code>0.87</code>).<br>4. Synthesizes an actionable retention brief moving just <strong>1.4 KB</strong> of payload.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        HTAP Advantage: Combines live transactional state with historical ML inferences without waiting for nightly warehouse batch loads.
+      </div>
+    </div>
+
+    <!-- Slide 05 -->
+    <div class="slide-frame" data-slide-index="4">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 05 / 10 · Solving Context-Window Physics</span>
+        <span class="badge badge-emerald">Bifurcated Routing Architecture</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Scaling Past LIMIT 5: Bifurcated Query Architecture</h2>
+        <p class="slide-lead">
+          Joining millions of rows inside an LLM’s token window either truncates accuracy (<code>LIMIT 5</code>) or overflows context. Enterprise scale bifurcates routing by cardinality:
+        </p>
+        <div class="slide-grid-2">
+          <div class="slide-tile">
+            <h4>Fast Path A: Entity Triage (1–50 Keys)</h4>
+            <p><strong>Engine:</strong> MCP Toolbox for Databases (<code>genai-toolbox</code>) over HA VPN to AWS Read Replicas.<br><strong>Result:</strong> Pooled connections, parameterized <code>ANY($1)</code> lookups, OIDC per-user auth, &lt;1.5s tool execution.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Analytical Path B: Population OLAP (100 – 50M+ Rows)</h4>
+            <p><strong>Engine:</strong> Managed BigQuery MCP + Conversational Analytics API + BigQuery <code>EXTERNAL_QUERY</code> &amp; BigQuery Omni.<br><strong>Result:</strong> Distributed SQL joins run in BigQuery slots; only compact summary rows enter Gemini’s context.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Design Principle: Use Gemini to plan queries and synthesize insights—use BigQuery Dremel &amp; Omni slots to execute relational joins.
+      </div>
+    </div>
+
+    <!-- Slide 06 -->
+    <div class="slide-frame" data-slide-index="5">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 06 / 10 · First-Party Google Cloud Stack</span>
+        <span class="badge badge-blue">Zero Custom Connector Debt</span>
+      </div>
+      <div>
+        <h2 class="slide-title">100% Alignment with Google Cloud 1P Primitives</h2>
+        <p class="slide-lead">
+          Upgrading custom Python MCP microservices to managed and declarative Google Cloud building blocks cuts bespoke connector code by &gt;90%:
+        </p>
+        <div class="slide-grid-3">
+          <div class="slide-tile">
+            <h4>Managed BigQuery MCP</h4>
+            <p>Replaces custom <code>mcp-server-bigquery</code> container with serverless <code>bigquery.googleapis.com/mcp</code> + native OAuth 2.0 and read-only SQL tools.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>MCP Toolbox (genai-toolbox)</h4>
+            <p>Replaces custom <code>psycopg2</code>/<code>pymysql</code> code with a single declarative <code>tools.yaml</code> providing connection pooling &amp; OpenTelemetry.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Dataplex + Looker Semantics</h4>
+            <p>Dataplex Knowledge Catalog loads relevant schemas lazily (saving 85%+ prompt tokens) while LookML guarantees consistent KPI math.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Single-Cloud Note: When all data already sits in GCP, connect directly to Conversational Analytics API + Managed BigQuery MCP.
+      </div>
+    </div>
+
+    <!-- Slide 07 -->
+    <div class="slide-frame" data-slide-index="6">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 07 / 10 · CISO, DBA &amp; FinOps Readiness</span>
+        <span class="badge badge-amber">Enterprise Guardrails</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Defense-in-Depth for Regulated Enterprises</h2>
+        <p class="slide-lead">
+          Built to pass banking DBA, CISO, and FinOps architecture reviews on day one:
+        </p>
+        <div class="slide-grid-2">
+          <div class="slide-tile">
+            <h4>Zero Confused Deputy (OIDC → RLS)</h4>
+            <p>Propagates verified end-user OIDC identity through MCP Toolbox and BigQuery Row Access Policies (<code>SESSION_USER()</code>) with full audit trails.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Prompt-Injection Immunity</h4>
+            <p>Parameterized SQL templates neutralize indirect prompt injection from untrusted <code>support_tickets.issue</code> text, backed by Model Armor.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>DBA-Approved OLTP Protection</h4>
+            <p>Strictly targets AWS Read Replicas over private VPN with bounded connection pools, read-only sessions, and 5-second statement timeouts.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>FinOps Cost Circuit Breakers</h4>
+            <p>Enforces BigQuery <code>dry_run</code> pre-checks, partition pruning, and <code>maximum_bytes_billed</code> caps on multi-million-row telemetry tables.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Result: Predictable per-prompt unit economics with zero exposure to production OLTP lockups or SQL injection.
+      </div>
+    </div>
+
+    <!-- Slide 08 -->
+    <div class="slide-frame" data-slide-index="7">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 08 / 10 · Industry Playbooks</span>
+        <span class="badge badge-emerald">4 Split-Gravity Sweet Spots</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Where Customers Need This Most: 4 “Split-Gravity” Plays</h2>
+        <p class="slide-lead">
+          Highest business impact occurs in enterprises where Google Cloud already holds an analytical, ML, or CX anchor alongside AWS operational stores:
+        </p>
+        <div class="slide-grid-2">
+          <div class="slide-tile">
+            <h4>1. Post-M&amp;A Split-Brain (Banking, Insurance, Telco)</h4>
+            <p>Unify parent BigQuery risk/analytics models with acquired AWS subsidiary ledgers in weeks instead of waiting 24 months for post-merger ETL.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>2. CCAI Live Support Triage (Retail, Airlines, FinTech)</h4>
+            <p>Fuse multi-year BigQuery LTV &amp; churn scores with sub-second indexed AWS order/ledger lookups while the customer is live on the line.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>3. GA4 / Google Ads + AWS Checkout (E-Commerce, Media)</h4>
+            <p>Correlate native BigQuery ad-funnel clickstreams with live AWS subscription &amp; payment retention without manual CSV stitching.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>4. Ring-Fenced PII Sovereignty (Healthcare, EU Finance)</h4>
+            <p>Keep regulated PII pinned inside regional AWS enclaves while BigQuery Omni computes compliant cohorts locally with zero bulk replication.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Commercial Flywheel: Lands Gemini Enterprise immediately, then uses hot-query telemetry to guide Phase-2 Omni &amp; Datastream expansion.
+      </div>
+    </div>
+
+    <!-- Slide 09 -->
+    <div class="slide-frame" data-slide-index="8">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 09 / 10 · Architectural Discipline</span>
+        <span class="badge badge-rose">Fit vs. Anti-Patterns</span>
+      </div>
+      <div>
+        <h2 class="slide-title">Clear Guardrails: Choosing the Right Cross-Cloud Tool</h2>
+        <p class="slide-lead">
+          Credible enterprise architecture pairs bold capabilities with crisp boundaries on when another Google Cloud primitive is superior:
+        </p>
+        <div class="slide-grid-3">
+          <div class="slide-tile">
+            <h4>Use Live MCP Toolbox When…</h4>
+            <p>Sub-minute operational freshness matters and queries target specific entities or small cohorts (1–50 keys) on indexed AWS Read Replicas.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Use BigQuery Omni When…</h4>
+            <p>Analytical queries scan large AWS S3 / Iceberg / Delta tables where local AWS compute eliminates cross-cloud egress fees.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Use Datastream CDC When…</h4>
+            <p>High-concurrency BI dashboards run the same cross-cloud join 500+ times/day—continuous serverless CDC into BigQuery is 10x cheaper and 20x faster.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Disqualification Rule: Do not pitch cross-cloud MCP querying to 100% AWS-only estates with zero Google Cloud data or AI anchor.
+      </div>
+    </div>
+
+    <!-- Slide 10 -->
+    <div class="slide-frame" data-slide-index="9">
+      <div class="slide-top-meta">
+        <span class="slide-kicker">Slide 10 / 10 · Production Evolution Roadmap</span>
+        <span class="badge badge-teal">Actionable Next Steps</span>
+      </div>
+      <div>
+        <h2 class="slide-title">From Live ani-labs Showcase to Hardened Reference Kit</h2>
+        <p class="slide-lead">
+          With E2E cross-cloud reasoning and 66M-row BigQuery scale already live in <code>ani-labs</code>, three focused phases complete enterprise readiness:
+        </p>
+        <div class="slide-grid-3">
+          <div class="slide-tile">
+            <h4>Phase 0: Live Baseline (Complete)</h4>
+            <p>• <code>Analytics Agent</code> (ADK) &amp; Gemini Enterprise live in <code>ani-labs</code>.<br>• 3 Cloud Run MCP bridges + 66M-row <code>ccca</code> dataset verified.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Phase 1: 1P Connector Upgrade</h4>
+            <p>• Cut over to <code>bigquery.googleapis.com/mcp</code>.<br>• Consolidate AWS PG/MySQL onto <strong>MCP Toolbox (<code>genai-toolbox</code>)</strong> with pooling &amp; OIDC.</p>
+          </div>
+          <div class="slide-tile">
+            <h4>Phase 2: Federation &amp; Benchmark</h4>
+            <p>• Add BigQuery <code>EXTERNAL_QUERY</code> / Omni for population joins.<br>• Connect Dataplex &amp; publish 100-query Golden Eval Benchmark.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-takeaway">
+        Ready for Live Walkthrough: Explore interactive reasoning traces, live schemas, and the cardinality simulator in Capabilities Doc Mode.
+      </div>
+    </div>
+
+    <!-- Presenter Talk Track Drawer -->
+    <div id="speaker-notes-box" class="speaker-notes-drawer is-visible" aria-live="polite">
+      <div class="speaker-notes-label">Presenter Talk Track</div>
+      <p id="speaker-notes-content" class="speaker-notes-text">
+        Anchor the opening on business velocity: customers love Gemini Enterprise and BigQuery ML, but their operational ledgers and CRM tables often sit in AWS. Cross-Cloud Conversational Analytics gives them one governed AI brain across both clouds immediately—without blocking on a multi-quarter ETL migration.
+      </p>
+    </div>
+
+    <!-- Deck Navigation Bar -->
+    <div class="deck-controls-bar">
+      <div class="deck-nav-group">
+        <button id="btn-prev-slide" class="action-btn" type="button" disabled>← Previous</button>
+        <span id="slide-counter-text" class="slide-counter">01 / 10</span>
+        <button id="btn-next-slide" class="action-btn action-btn-primary" type="button">Next Slide →</button>
+      </div>
+
+      <div class="deck-nav-group">
+        <button id="btn-toggle-notes" class="action-btn" type="button">Hide Talk Track</button>
+        <button id="btn-return-doc" class="action-btn" type="button">Open Capabilities Doc</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
