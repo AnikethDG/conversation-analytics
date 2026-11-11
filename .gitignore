@@ -219,6 +219,15 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Local internal PM/VP prep materials
+# Local internal PM/VP prep materials & sensitive infra state
 prepper/
 .DS_Store
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+secrets.txt
+*.pem
+*.key
+*credentials*.json
+*service-account*.json

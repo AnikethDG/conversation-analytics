@@ -1,0 +1,4 @@
+mcp==1.29.0
+starlette
+uvicorn[standard]
+psycopg2-binary
