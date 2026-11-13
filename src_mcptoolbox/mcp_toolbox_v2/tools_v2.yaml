@@ -1,0 +1,305 @@
+sources:
+  aws_postgres_v2:
+    kind: postgres
+    host: ${POSTGRES_HOST}
+    port: ${POSTGRES_PORT:5432}
+    database: ${POSTGRES_DB:finance_db}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+  aws_mysql_v2:
+    kind: mysql
+    host: ${MYSQL_HOST}
+    port: ${MYSQL_PORT:3306}
+    database: ${MYSQL_DB:engagement_db}
+    user: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+
+  gcp_bigquery_v2:
+    kind: bigquery
+    project: ${BQ_PROJECT_ID}
+
+tools:
+  pg_get_customer_360_v2:
+    kind: postgres-sql
+    source: aws_postgres_v2
+    description: >-
+      Look up a customer in AWS PostgreSQL (finance_db) by exact email or partial
+      name, returning their customer ID, accounts, balances, and recent transactions.
+    parameters:
+      - name: search_term
+        type: string
+        description: Customer email address (e.g. 'james.smith@example.com') or full name.
+    statement: |
+      WITH matched_cust AS (
+        SELECT id, name, email
+        FROM customers
+        WHERE email = $1 OR name = $1
+        ORDER BY id ASC
+        LIMIT 5
+      ),
+      matched_accts AS (
+        SELECT a.id AS account_id, a.customer_id, a.type AS account_type, a.balance
+        FROM accounts a
+        WHERE a.customer_id IN (SELECT id FROM matched_cust)
+        LIMIT 20
+      ),
+      tx_rollup AS (
+        SELECT t.account_id, COUNT(*) AS tx_count, SUM(t.amount) AS net_tx_amount
+        FROM transactions t
+        WHERE t.account_id IN (SELECT account_id FROM matched_accts)
+        GROUP BY t.account_id
+      )
+      SELECT
+        c.id AS customer_id,
+        c.name,
+        c.email,
+        ma.account_id,
+        ma.account_type,
+        ma.balance::FLOAT8 AS balance,
+        COALESCE(tx.tx_count, 0) AS recent_tx_count,
+        COALESCE(tx.net_tx_amount, 0)::FLOAT8 AS net_tx_amount
+      FROM matched_cust c
+      LEFT JOIN matched_accts ma ON ma.customer_id = c.id
+      LEFT JOIN tx_rollup tx ON tx.account_id = ma.account_id;
+
+  pg_batch_accounts_by_emails_v2:
+    kind: postgres-sql
+    source: aws_postgres_v2
+    description: >-
+      Batch lookup of AWS PostgreSQL accounts and balances for multiple customer
+      emails in a single round-trip (pass comma-separated emails, max 50).
+      Eliminates N+1 query loops during cross-cloud joins.
+    parameters:
+      - name: emails_csv
+        type: string
+        description: Comma-separated customer emails, e.g. 'a@example.com,b@example.com'.
+    statement: |
+      SELECT
+        c.email,
+        c.name,
+        a.type AS account_type,
+        a.balance::FLOAT8 AS balance
+      FROM customers c
+      JOIN accounts a ON a.customer_id = c.id
+      WHERE c.email = ANY(string_to_array(REPLACE($1, ' ', ''), ','))
+      ORDER BY c.email, a.type
+      LIMIT 50;
+
+  pg_top_customers_by_balance_v2:
+    kind: postgres-sql
+    source: aws_postgres_v2
+    description: >-
+      Retrieve top customers in AWS PostgreSQL ordered by highest or lowest account
+      balance for a given account_type ('checking', 'savings', 'credit', or 'all'),
+      capped at 25 rows to protect LLM context window.
+    parameters:
+      - name: account_type
+        type: string
+        description: Account type filter ('checking', 'savings', 'credit', or 'all').
+      - name: sort_order
+        type: string
+        description: "'desc' for highest balances or 'asc' for lowest/negative balances."
+      - name: row_limit
+        type: integer
+        description: Max rows to return (1 to 25).
+    statement: |
+      SELECT
+        c.name,
+        c.email,
+        a.type AS account_type,
+        a.balance::FLOAT8 AS balance
+      FROM accounts a
+      JOIN customers c ON c.id = a.customer_id
+      WHERE ($1 = 'all' OR LOWER(a.type) = LOWER($1))
+      ORDER BY
+        CASE WHEN LOWER($2) = 'asc' THEN a.balance END ASC,
+        CASE WHEN LOWER($2) <> 'asc' THEN a.balance END DESC
+      LIMIT LEAST(GREATEST($3, 1), 25);
+
+  pg_ledger_summary_kpis_v2:
+    kind: postgres-sql
+    source: aws_postgres_v2
+    description: >-
+      Compute aggregated financial KPIs across AWS PostgreSQL finance_db
+      (account counts, total/average balances by account type) inside SQL without
+      streaming raw rows into context.
+    statement: |
+      SELECT
+        type AS account_type,
+        COUNT(*) AS account_count,
+        ROUND(SUM(balance), 2)::FLOAT8 AS total_balance,
+        ROUND(AVG(balance), 2)::FLOAT8 AS avg_balance
+      FROM accounts
+      GROUP BY type
+      ORDER BY total_balance DESC;
+
+  mysql_get_customer_engagement_v2:
+    kind: mysql-sql
+    source: aws_mysql_v2
+    description: >-
+      Fetch support tickets and marketing campaign responses from AWS MySQL
+      (engagement_db) for a single customer_email.
+    parameters:
+      - name: customer_email
+        type: string
+        description: Customer email address.
+      - name: customer_email_repeat
+        type: string
+        description: Same customer email address (used for second UNION branch).
+    statement: |
+      SELECT 'support_ticket' AS record_type, status AS detail_1, issue AS detail_2
+      FROM support_tickets
+      WHERE customer_email = ?
+      UNION ALL
+      SELECT 'campaign_response' AS record_type, campaign_name AS detail_1, response AS detail_2
+      FROM campaign_responses
+      WHERE customer_email = ?
+      LIMIT 30;
+
+  mysql_batch_engagement_by_emails_v2:
+    kind: mysql-sql
+    source: aws_mysql_v2
+    description: >-
+      Batch lookup of open/recent support tickets and campaign responses in AWS MySQL
+      for up to 50 comma-separated customer emails in a single query.
+    parameters:
+      - name: emails_csv_tickets
+        type: string
+        description: Comma-separated customer emails without spaces, e.g. 'a@example.com,b@example.com'.
+      - name: emails_csv_campaigns
+        type: string
+        description: Same comma-separated customer emails without spaces.
+    statement: |
+      SELECT customer_email, 'ticket' AS kind, status AS attr, issue AS detail
+      FROM support_tickets
+      WHERE FIND_IN_SET(customer_email, ?) > 0
+      UNION ALL
+      SELECT customer_email, 'campaign' AS kind, campaign_name AS attr, response AS detail
+      FROM campaign_responses
+      WHERE FIND_IN_SET(customer_email, ?) > 0
+      LIMIT 50;
+
+  mysql_engagement_summary_kpis_v2:
+    kind: mysql-sql
+    source: aws_mysql_v2
+    description: >-
+      Return aggregated ticket counts by status and campaign response counts
+      across AWS MySQL engagement_db.
+    statement: |
+      SELECT 'ticket_status' AS metric_group, status AS bucket, COUNT(*) AS record_count
+      FROM support_tickets
+      GROUP BY status
+      UNION ALL
+      SELECT CONCAT('campaign:', campaign_name) AS metric_group, response AS bucket, COUNT(*) AS record_count
+      FROM campaign_responses
+      GROUP BY campaign_name, response
+      LIMIT 40;
+
+  bq_get_customer_risk_and_events_v2:
+    kind: bigquery-sql
+    source: gcp_bigquery_v2
+    description: >-
+      Fetch a customer's churn/fraud risk scores and up to 5 recent app telemetry
+      events from BigQuery dataset ccca by customer_email.
+    parameters:
+      - name: customer_email
+        type: string
+        description: Customer email address.
+    statement: |
+      WITH risk AS (
+        SELECT customer_email, churn_risk_score, fraud_risk_score
+        FROM `ccca.customer_risk_profiles`
+        WHERE customer_email = @customer_email
+        LIMIT 1
+      ),
+      ev AS (
+        SELECT
+          customer_email,
+          ARRAY_AGG(
+            STRUCT(event_type, device_os, CAST(timestamp AS STRING) AS event_ts)
+            ORDER BY timestamp DESC
+            LIMIT 5
+          ) AS recent_events
+        FROM `ccca.app_events`
+        WHERE customer_email = @customer_email
+        GROUP BY customer_email
+      )
+      SELECT
+        COALESCE(risk.customer_email, ev.customer_email) AS customer_email,
+        risk.churn_risk_score,
+        risk.fraud_risk_score,
+        ev.recent_events
+      FROM risk
+      FULL OUTER JOIN ev USING (customer_email);
+
+  bq_batch_risk_by_emails_v2:
+    kind: bigquery-sql
+    source: gcp_bigquery_v2
+    description: >-
+      Batch lookup of churn_risk_score, fraud_risk_score, and app event counts in
+      BigQuery ccca for up to 50 comma-separated customer emails in a single query.
+    parameters:
+      - name: emails_csv
+        type: string
+        description: Comma-separated customer emails without spaces, e.g. 'a@example.com,b@example.com'.
+    statement: |
+      WITH target_emails AS (
+        SELECT TRIM(email) AS customer_email
+        FROM UNNEST(SPLIT(@emails_csv, ',')) AS email
+        WHERE TRIM(email) != ''
+        LIMIT 50
+      ),
+      ev_counts AS (
+        SELECT e.customer_email, COUNT(*) AS total_events, COUNTIF(e.event_type = 'app_crash') AS crash_events
+        FROM `ccca.app_events` e
+        JOIN target_emails t USING (customer_email)
+        GROUP BY e.customer_email
+      )
+      SELECT
+        t.customer_email,
+        r.churn_risk_score,
+        r.fraud_risk_score,
+        COALESCE(ec.total_events, 0) AS total_events,
+        COALESCE(ec.crash_events, 0) AS crash_events
+      FROM target_emails t
+      LEFT JOIN `ccca.customer_risk_profiles` r USING (customer_email)
+      LEFT JOIN ev_counts ec USING (customer_email);
+
+  bq_top_risk_cohort_v2:
+    kind: bigquery-sql
+    source: gcp_bigquery_v2
+    description: >-
+      Prune the 50M-row BigQuery ccca.customer_risk_profiles table inside BigQuery
+      slots and return up to 10 high-risk customer_email keys matching minimum
+      fraud and churn thresholds.
+    parameters:
+      - name: min_fraud_score
+        type: float
+        description: Minimum fraud_risk_score threshold (0.0 to 1.0, e.g. 0.9).
+      - name: min_churn_score
+        type: float
+        description: Minimum churn_risk_score threshold (0.0 to 1.0, e.g. 0.0).
+    statement: |
+      SELECT
+        customer_email,
+        ROUND(fraud_risk_score, 4) AS fraud_risk_score,
+        ROUND(churn_risk_score, 4) AS churn_risk_score
+      FROM `ccca.customer_risk_profiles`
+      WHERE fraud_risk_score >= @min_fraud_score
+        AND churn_risk_score >= @min_churn_score
+      ORDER BY fraud_risk_score DESC, churn_risk_score DESC
+      LIMIT 10;
+
+toolsets:
+  ccca_cross_cloud_v2:
+    - pg_get_customer_360_v2
+    - pg_batch_accounts_by_emails_v2
+    - pg_top_customers_by_balance_v2
+    - pg_ledger_summary_kpis_v2
+    - mysql_get_customer_engagement_v2
+    - mysql_batch_engagement_by_emails_v2
+    - mysql_engagement_summary_kpis_v2
+    - bq_get_customer_risk_and_events_v2
+    - bq_batch_risk_by_emails_v2
+    - bq_top_risk_cohort_v2
