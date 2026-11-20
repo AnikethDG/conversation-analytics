@@ -16,6 +16,7 @@ import urllib.parse
 import urllib.request
 
 from google.adk.agents import LlmAgent
+from google.adk.models import Gemini
 from google.adk.tools.mcp_tool import McpToolset, StreamableHTTPConnectionParams
 import google.auth
 from google.auth.transport.requests import Request
@@ -128,14 +129,18 @@ TOOLBOX_MCP_V2_URL = os.environ.get(
 BQ_MCP_V2_URL = os.environ.get(
     "BQ_MCP_V2_URL", "https://mcp-server-bigquery-v2.example.run.app/mcp"
 )
-AGENT_MODEL_V2 = os.environ.get("AGENT_MODEL_V2", "gemini-2.5-flash")
+AGENT_MODEL_V2 = os.environ.get("AGENT_MODEL_V2", "gemini-3-flash-preview")
+AGENT_MODEL_LOCATION_V2 = os.environ.get("AGENT_MODEL_LOCATION_V2", "global")
 
 toolbox_v2_toolset = CloudRunOIDCMcpToolset(url=TOOLBOX_MCP_V2_URL, timeout=30.0)
 bigquery_v2_toolset = CloudRunOIDCMcpToolset(url=BQ_MCP_V2_URL, timeout=30.0)
 
 root_agent = LlmAgent(
     name="sentinel_customer_360_advisor_v2",
-    model=AGENT_MODEL_V2,
+    model=Gemini(
+        model=AGENT_MODEL_V2,
+        client_kwargs={"location": AGENT_MODEL_LOCATION_V2},
+    ),
     description=(
         "Sentinel — Enterprise Customer 360 & Risk Advisor (v2): Cross-cloud "
         "financial ledger, CRM engagement, and ML fraud/churn intelligence advisor."

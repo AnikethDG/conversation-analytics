@@ -210,7 +210,7 @@ async def main() -> None:
             toolbox_mcp_url=toolbox_mcp_url,
             bigquery_mcp_url=bq_v2_mcp_url,
             project_id=project_id,
-            location="us-west1",
+            location=os.environ.get("AGENT_MODEL_LOCATION_V2", "global"),
         )
         print(f"\n  >>> {title}")
         print(f"      Tools Called : {res['tool_calls']}")

@@ -45,11 +45,12 @@ def get_cloud_run_id_token(target_audience: str) -> str:
 def build_analytics_agent_v2(
     toolbox_mcp_url: str,
     bigquery_mcp_url: str,
-    model_name: str = "gemini-2.5-flash",
+    model_name: str = "gemini-3-flash-preview",
 ):
     """Constructs the google-adk LlmAgent wired to both IAM-locked _v2 MCP servers."""
     import urllib.parse
     from google.adk.agents import LlmAgent
+    from google.adk.models import Gemini
     from google.adk.tools.mcp_tool import MCPToolset, StreamableHTTPConnectionParams
 
     tb_p = urllib.parse.urlparse(toolbox_mcp_url)
@@ -75,9 +76,10 @@ def build_analytics_agent_v2(
         )
     )
 
+    model_loc = os.environ.get("AGENT_MODEL_LOCATION_V2", "global")
     return LlmAgent(
         name="analytics_agent_v2",
-        model=model_name,
+        model=Gemini(model=model_name, client_kwargs={"location": model_loc}),
         instruction=PROMPT_PATH.read_text(encoding="utf-8"),
         tools=[toolbox_toolset, bigquery_v2_toolset],
     )
@@ -88,8 +90,8 @@ async def run_agent_turn_v2(
     toolbox_mcp_url: str,
     bigquery_mcp_url: str,
     project_id: str | None = None,
-    location: str = "us-west1",
-    model_name: str = "gemini-2.5-flash",
+    location: str = "global",
+    model_name: str = "gemini-3-flash-preview",
 ) -> Dict[str, Any]:
     """Executes a single conversational turn on analytics_agent_v2 and captures telemetry."""
     from google.adk.runners import InMemoryRunner
