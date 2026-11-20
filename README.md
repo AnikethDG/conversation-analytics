@@ -8,7 +8,8 @@ Zero-copy **Cross-Cloud Conversational Analytics** across **AWS** operational da
 
 | Directory | Description | Status |
 | :--- | :--- | :--- |
-| **[`src_mcptoolbox/`](./src_mcptoolbox)** | **Enterprise v2 Architecture (Google `MCP Toolbox` + Guardrails)**: Official prebuilt `genai-toolbox` (`v1.1.0`) configured via declarative [`tools_v2.yaml`](./src_mcptoolbox/mcp_toolbox_v2/tools_v2.yaml), paired with a `dry_run` + `50`-row-capped BigQuery MCP server and **`Sentinel — Customer 360 & Risk Advisor_v2`** on Vertex AI Agent Engine. | **Recommended (Scalable & Hardened)** |
+| **[`src_v3_native_bq/`](./src_v3_native_bq)** | **Zero-Custom-Server v3 Architecture (`MCP Toolbox` + Native BigQuery MCP)**: Pairs Google `MCP Toolbox` (AWS Postgres & MySQL) with Google's managed **`https://bigquery.googleapis.com/mcp`** endpoint (read-only `tool_filter` + dataset-scoped IAM)—eliminating all custom MCP Dockerfiles. | **Latest (`v3` Zero Custom Containers)** |
+| **[`src_mcptoolbox/`](./src_mcptoolbox)** | **Enterprise v2 Architecture (Google `MCP Toolbox` + Guardrails)**: Official prebuilt `genai-toolbox` (`v1.1.0`) configured via declarative [`tools_v2.yaml`](./src_mcptoolbox/mcp_toolbox_v2/tools_v2.yaml), paired with a `dry_run` + `50`-row-capped BigQuery MCP server and **`Sentinel — Customer 360 & Risk Advisor_v2`** on Vertex AI Agent Engine. | **Recommended (Custom `dry_run` Cap)** |
 | **[`src/`](./src)** | **Baseline v1 Prototype (Custom Python MCP Servers)**: Three custom Python/Starlette containers (`psycopg2`, `pymysql`, `google-cloud-bigquery`) executing raw LLM-generated `SELECT` SQL strings. | Reference Baseline |
 | **[`doc/`](./doc)** | **Interactive Google Cloud Executive Brief & 5-Slide Pitch Portal**: Visual `< Prev` / `Next >` multi-hop flow walkthrough (`User ↔ Analytics Agent ↔ Cloud Run MCP ↔ AWS Postgres, AWS MySQL & GCP BigQuery`) and 5-slide executive presentation. | Web Portal |
 
